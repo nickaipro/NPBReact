@@ -17,6 +17,8 @@ export default function startScreen () {
     const photoSound = useAudioPlayer(
         require("../assets/sounds/photosound.mp3")
     )
+
+    const [isCounterVisible, setCounterVisible] = useState(false)
     const buttonScale = useRef(new Animated.Value(1)).current
 
     function pressIn(){
@@ -62,12 +64,15 @@ export default function startScreen () {
             
         )
     }
-    async function waitOneSecond(): Promise<void>{
-        return new Promise((resolve)=>{
-            setTimeout(resolve,1000)
+    
+
+    async function wait67Seconds():Promise<void>{
+        return new Promise ((resolve)=>{
+            setTimeout(resolve,667)
         })
+
     }
-    const [currentCounter, setCurrentCounter] = useState(2)
+    const [currentCounter, setCurrentCounter] = useState(3)
 
     
 
@@ -78,26 +83,32 @@ export default function startScreen () {
 
     }
     async function countdown(){
+        setCurrentCounter(3)
+        await wait67Seconds()
+
         setCurrentCounter(2)
-        await waitOneSecond()
+        await wait67Seconds()
 
         setCurrentCounter(1)
-        await waitOneSecond()
+        await wait67Seconds()
+
     }
     async function takeThreePictures(){
+        setCounterVisible(true)
         
         for (let count =0; count <3; count++){
+            
             await countdown()
             setCurrentPhoto(count+1)
-            await playPhotoSound()
+            playPhotoSound()
             await takePicture()
             
 
-            if (count <2){
-                await waitTwoSeconds()
-
-        }
+            
+        
     }
+    setCounterVisible(false)
+    router.push("/results")
     }
     
 
@@ -199,13 +210,16 @@ export default function startScreen () {
 
                 
                 </View>
-
-                <View style = {styles.countdownContainer}>
+                {isCounterVisible &&(
+                    <View style = {styles.countdownContainer}>
                     <Text style = {styles.countdown}>
                     {currentCounter}
 
                 </Text>
                 </View>
+
+                )}
+                
                 
             <View style = {styles.cameraContainer}>
                 <CameraView style = {styles.camera}
@@ -246,6 +260,14 @@ export default function startScreen () {
             
         </View>
     )
+    router.push({
+        pathname: "/results",
+        params: {
+            photos: JSON.stringify(photos),
+        }
+    })
+        
+    
     }
     }
 
@@ -364,13 +386,18 @@ const styles = StyleSheet.create({
     },
     countdown:{
         color: "white",
-        fontSize: 60,
-        textAlign: "center"
+        fontSize: 80,
+        textAlign: "center",
+        fontFamily: "youthFont",
+        textShadowColor: "black",
+        textShadowOffset: {width: 0, height: 0},
+        textShadowRadius:90
+        
 
 
     },countdownContainer:{
         position: "absolute",
-        top: 100,
+        top: 250,
         left: 0,
         right: 0,
         alignItems: "center",
