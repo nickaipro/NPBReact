@@ -5,6 +5,8 @@ import {CameraView, CameraType, useCameraPermissions} from "expo-camera"
 import {useRef, useEffect, useState} from "react"
 import {setAudioModeAsync, useAudioPlayer} from "expo-audio"
 import {Animated} from "react-native"
+const photos: string[]=[]
+
 
 
 
@@ -13,7 +15,7 @@ import {Animated} from "react-native"
 
 export default function startScreen () {
     const [currentPhoto,setCurrentPhoto] = useState(1)
-    const photos = []
+    
     const photoSound = useAudioPlayer(
         require("../assets/sounds/photosound.mp3")
     )
@@ -94,6 +96,8 @@ export default function startScreen () {
 
     }
     async function takeThreePictures(){
+        photos.length = 0
+        
         setCounterVisible(true)
         
         for (let count =0; count <3; count++){
@@ -108,7 +112,12 @@ export default function startScreen () {
         
     }
     setCounterVisible(false)
-    router.push("/results")
+    router.push({
+        pathname: "/results",
+        params: {
+            photos: JSON.stringify(photos),
+        }
+    })
     }
     
 
@@ -118,7 +127,7 @@ export default function startScreen () {
         
         if (cameraRef.current) {
             const photo = await cameraRef.current.takePictureAsync()
-            photos.push(photo)
+            photos.push(photo.uri)
             
         }
     }
@@ -260,12 +269,7 @@ export default function startScreen () {
             
         </View>
     )
-    router.push({
-        pathname: "/results",
-        params: {
-            photos: JSON.stringify(photos),
-        }
-    })
+    
         
     
     }
