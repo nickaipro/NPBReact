@@ -5,7 +5,7 @@ import {CameraView, CameraType, useCameraPermissions} from "expo-camera"
 import {useRef, useEffect, useState} from "react"
 import {setAudioModeAsync, useAudioPlayer} from "expo-audio"
 import {Animated} from "react-native"
-const photos: string[]=[]
+const photos: {uri:string, facing: CameraType}[]=[]
 
 
 
@@ -127,7 +127,7 @@ export default function startScreen () {
         
         if (cameraRef.current) {
             const photo = await cameraRef.current.takePictureAsync()
-            photos.push(photo.uri)
+            photos.push({uri:photo.uri,facing:facing})
             
         }
     }
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
         fontSize: 80,
         textAlign: "center",
         fontFamily: "youthFont",
-        textShadowColor: "black",
+        
         textShadowOffset: {width: 0, height: 0},
         textShadowRadius:90
         
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
 
     },countdownContainer:{
         position: "absolute",
-        top: 250,
+        top: 100,
         left: 0,
         right: 0,
         alignItems: "center",
